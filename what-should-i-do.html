@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- Ensure responsive scaling on iPad/iPhone: -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Should I Do Now?</title>
+  <style>
+    /* ----- BASIC PAGE STYLES ----- */
+    html, body {
+      margin: 0; 
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #faf3ff; /* Pastel lavender-ish background */
+      color: #333;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    /* ----- HEADER ----- */
+    h1 {
+      font-weight: 700;
+      font-size: 2rem;
+      color: #7f57ff; /* Purple accent color */
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    /* ----- SCOREBOARD & PROGRESS BAR ----- */
+    #scoreboard {
+      width: 100%;
+      max-width: 800px;
+      font-size: 1.1em;
+      margin-bottom: 1rem;
+      color: #5f3dcc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .progress-container {
+      width: 70%;
+      background-color: #eee;
+      height: 14px;
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background-color: #7f57ff;
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease-in-out;
+    }
+
+    /* ----- SCENARIO CONTAINER ----- */
+    #scenario-container {
+      width: 100%;
+      max-width: 800px;
+      background: #ffffff;
+      border: 2px solid #ece0ff;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    #scenario-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    /* ----- ANSWERS (MAIN ACTION RADIO BUTTONS) ----- */
+    .answers {
+      margin: 0.5rem 0 1rem 0;
+    }
+    .answer-label {
+      display: block;
+      margin: 0.4rem 0;
+      cursor: pointer;
+    }
+    .answer-label input[type="radio"] {
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+
+    /* ----- STAKEHOLDER EMOTION GUESSES (EMOTICONS) ----- */
+    .stakeholder-section {
+      margin: 1rem 0;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.8rem;
+    }
+    .stakeholder-name {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .emotion-options {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on smaller screens */
+      gap: 1rem;       /* spacing between each emotion choice */
+      align-items: center;
+      margin-top: 0.3rem;
+    }
+
+    /* Label contains the radio input + the icon block */
+    .emotion-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+    /* Hide the default radio bubble, but keep it focusable/clickable */
+    .emotion-label input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .emoji-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.2;
+      padding: 0.3rem;
+      border-radius: 0.3rem;
+      transition: transform 0.1s ease, background 0.2s ease;
+    }
+    .emoji-icon {
+      font-size: 1.5rem;
+    }
+    .emoji-name {
+      font-size: 0.8rem;
+      margin-top: 0.2rem;
+    }
+
+    /* Hover (desktop) + checked states */
+    .emotion-label:hover .emoji-wrap {
+      transform: scale(1.1);
+      background: #eee;
+    }
+    /* This highlights the label if the radio is checked. */
+    .emotion-label input[type="radio"]:checked + .emoji-wrap {
+      background: #d3c9ff; /* pastel purple highlight */
+      box-shadow: 0 0 3px #aaa;
+    }
+
+    /* ----- BUTTONS ----- */
+    button {
+      background-color: #7f57ff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-right: 0.5rem;
+    }
+    button:hover {
+      background-color: #6b3fff;
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* ----- EXPLANATION BOX ----- */
+    .explanation {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #efffed; /* Light green hint */
+      border-left: 5px solid #6c6;
+      border-radius: 4px;
+      display: none;
+      font-size: 0.95rem;
+    }
+
+    /* ----- SUMMARY SECTION ----- */
+    #summary-container {
+      width: 100%;
+      max-width: 800px;
+      background: #ffffff;
+      border: 2px solid #ece0ff;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: none; /* hidden until game ends */
+    }
+    #summary-container h2 {
+      color: #7f57ff;
+      margin-top: 0;
+    }
+    .summary-item {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .summary-question {
+      font-weight: 600;
+    }
+    .summary-player-answer,
+    .summary-correct-answer {
+      margin-top: 0.3rem;
+    }
+    .correct {
+      color: #3c8c3c;
+    }
+    .incorrect {
+      color: #ad2a2a;
+    }
+  </style>
+</head>
+<body>
+
+<h1>What Should I Do Now? — Safari-Friendly</h1>
+
+<div id="scoreboard">
+  <div>Score: <span id="score">0</span></div>
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+</div>
+
+<div id="scenario-container">
+  <div id="scenario-text">[Scenario text here]</div>
+  <div id="answers" class="answers"></div>
+
+  <!-- We'll dynamically insert stakeholder “emotion guess” UI here -->
+  <div id="stakeholders-area"></div>
+
+  <button id="submit-btn">Submit Answer</button>
+  <button id="next-btn" class="hidden">Next Scenario</button>
+
+  <div id="explanation" class="explanation"></div>
+</div>
+
+<!-- End-of-Game Summary -->
+<div id="summary-container">
+  <h2>Review Your Choices</h2>
+  <p>You can copy/paste or print this summary if you like:</p>
+  <div id="summary-contents"></div>
+</div>
+
+<script>
+  // 10 Emotions with emoji + text
+  const EMOTICON_CHOICES = [
+    { value: "Happy",       icon: "🙂" },
+    { value: "Excited",     icon: "🤩" },
+    { value: "Proud",       icon: "😎" },
+    { value: "Relieved",    icon: "😌" },
+    { value: "Neutral",     icon: "😐" },
+    { value: "Confused",    icon: "😕" },
+    { value: "Upset",       icon: "😔" },
+    { value: "Annoyed",     icon: "😒" },
+    { value: "Angry",       icon: "😠" },
+    { value: "Embarrassed", icon: "😳" }
+  ];
+
+  // 8 scenarios, each with:
+  //   question, choices, correctAnswer, explanation,
+  //   stakeholders: {name, emotionsPerChoice[]}
+  const scenarios = [
+    {
+      question: "You promised your parent you'd be home by 9 PM, but your friend's party went longer, and you got home at 10 PM. Your parent confronts you.",
+      choices: [
+        "Apologize sincerely and explain why you were late.",
+        "Blame your friend for making you stay longer.",
+        "Insist you’re old enough to ignore curfews.",
+        "Sneak out again next time without telling them."
+      ],
+      correctAnswer: 0,
+      explanation: "Owning your mistake and apologizing is mature. You can negotiate curfews calmly if needed.",
+      stakeholders: [
+        {
+          name: "Parent",
+          emotionsPerChoice: ["Neutral","Angry","Upset","Annoyed"]
+        },
+        {
+          name: "Friend",
+          emotionsPerChoice: ["Neutral","Upset","Annoyed","Happy"]
+        }
+      ]
+    },
+    {
+      question: "You're doing a group project. One member isn't contributing at all, and you’re falling behind. The teacher asks for a progress update.",
+      choices: [
+        "Do all the work yourself and not mention the lazy member.",
+        "Talk to the member first, then let the teacher know if they still won't help.",
+        "Complain loudly in front of the teacher to embarrass the member.",
+        "Blame the teacher for giving too big a project."
+      ],
+      correctAnswer: 1,
+      explanation: "Communicating with the group member first is respectful. If they still refuse, letting the teacher know is fair.",
+      stakeholders: [
+        {
+          name: "Teacher",
+          emotionsPerChoice: ["Neutral","Happy","Annoyed","Angry"]
+        },
+        {
+          name: "Group Member",
+          emotionsPerChoice: ["Neutral","Upset","Angry","Annoyed"]
+        }
+      ]
+    },
+    {
+      question: "You witness a friend cheating on a test. The teacher suspects something and asks if you saw any dishonesty.",
+      choices: [
+        "Tell the teacher you saw cheating, but keep names private.",
+        "Protect your friend by lying and saying you saw nothing.",
+        "Explain the situation honestly, including who cheated.",
+        "Avoid the question and pretend you didn't hear."
+      ],
+      correctAnswer: 2,
+      explanation: "Honesty is vital in academic integrity. It's tough, but truth helps maintain fairness.",
+      stakeholders: [
+        {
+          name: "Friend",
+          emotionsPerChoice: ["Neutral","Happy","Angry","Annoyed"]
+        },
+        {
+          name: "Teacher",
+          emotionsPerChoice: ["Annoyed","Upset","Happy","Neutral"]
+        }
+      ]
+    },
+    {
+      question: "Your sibling has been gossiping about you to a cousin. You find out and decide to confront them.",
+      choices: [
+        "Calmly ask why they're gossiping and try to talk it out.",
+        "Spread rumors about them in return so it's even.",
+        "Yell at them in front of the entire family gathering.",
+        "Complain to your parents so they punish your sibling."
+      ],
+      correctAnswer: 0,
+      explanation: "Direct, calm communication can clear misunderstandings better than retaliation or punishment.",
+      stakeholders: [
+        {
+          name: "Sibling",
+          emotionsPerChoice: ["Neutral","Angry","Upset","Annoyed"]
+        },
+        {
+          name: "Cousin",
+          emotionsPerChoice: ["Happy","Annoyed","Upset","Neutral"]
+        }
+      ]
+    },
+    {
+      question: "You started a rumor about a classmate. The teacher is about to punish you, and the classmate is clearly hurt.",
+      choices: [
+        "Deny everything and say you had nothing to do with it.",
+        "Apologize to the classmate and accept the teacher's consequence.",
+        "Blame another student for starting it.",
+        "Laugh and say the classmate overreacted."
+      ],
+      correctAnswer: 1,
+      explanation: "Owning up and apologizing is the best way to fix the harm. Taking responsibility shows maturity.",
+      stakeholders: [
+        {
+          name: "Teacher",
+          emotionsPerChoice: ["Annoyed","Neutral","Angry","Upset"]
+        },
+        {
+          name: "Classmate",
+          emotionsPerChoice: ["Upset","Happy","Angry","Annoyed"]
+        }
+      ]
+    },
+    {
+      question: "Your parent says you can't go out until chores are done, but your coach insists you attend practice soon.",
+      choices: [
+        "Explain the conflict to your parent and coach, looking for a compromise.",
+        "Ignore chores and go to practice anyway.",
+        "Argue with your parent until they let you go.",
+        "Skip practice, hoping the coach won't notice."
+      ],
+      correctAnswer: 0,
+      explanation: "Communicating the conflict to both sides and seeking a solution is healthiest.",
+      stakeholders: [
+        {
+          name: "Parent",
+          emotionsPerChoice: ["Neutral","Angry","Annoyed","Neutral"]
+        },
+        {
+          name: "Coach",
+          emotionsPerChoice: ["Neutral","Upset","Annoyed","Angry"]
+        }
+      ]
+    },
+    {
+      question: "A new student from a different culture struggles with English. Another friend mocks them, and the new student looks hurt.",
+      choices: [
+        "Laugh along with your friend to avoid standing out.",
+        "Tell your friend to stop and offer to help the new student.",
+        "Stay silent and pretend you didn't notice.",
+        "Report the friend immediately to the principal."
+      ],
+      correctAnswer: 1,
+      explanation: "Standing up against hurtful teasing and offering support fosters empathy and inclusion.",
+      stakeholders: [
+        {
+          name: "New Student",
+          emotionsPerChoice: ["Upset","Happy","Neutral","Neutral"]
+        },
+        {
+          name: "Mocking Friend",
+          emotionsPerChoice: ["Happy","Annoyed","Neutral","Angry"]
+        }
+      ]
+    },
+    {
+      question: "Your phone goes off loudly in class. The teacher is upset and calls your parent. Next day, the teacher asks how you'll prevent it again.",
+      choices: [
+        "Apologize, keep it on silent, and accept any consequence.",
+        "Argue that it's not a big deal since it was only once.",
+        "Blame your parent for messaging you at the wrong time.",
+        "Pretend your phone was stolen and you had no idea."
+      ],
+      correctAnswer: 0,
+      explanation: "Apologizing and showing a plan to avoid future disruptions is best. Taking responsibility helps maintain trust.",
+      stakeholders: [
+        {
+          name: "Teacher",
+          emotionsPerChoice: ["Happy","Annoyed","Upset","Angry"]
+        },
+        {
+          name: "Parent",
+          emotionsPerChoice: ["Neutral","Angry","Upset","Annoyed"]
+        }
+      ]
+    }
+  ];
+
+  let currentScenarioIndex = 0;
+  let score = 0;
+  // We'll store the player's main answer + emoticon guesses for each scenario
+  // userChoices[i] = { choiceIndex: <0-based>, stakeholderGuesses: [ "Happy", "Angry", ... ] }
+  const userChoices = [];
+
+  // Grab references
+  const scenarioTextEl = document.getElementById('scenario-text');
+  const answersEl = document.getElementById('answers');
+  const stakeholdersAreaEl = document.getElementById('stakeholders-area');
+  const submitBtn = document.getElementById('submit-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const explanationEl = document.getElementById('explanation');
+  const scoreEl = document.getElementById('score');
+  const progressBarEl = document.getElementById('progress-bar');
+
+  const summaryContainer = document.getElementById('summary-container');
+  const summaryContents = document.getElementById('summary-contents');
+
+  loadScenario(scenarios[currentScenarioIndex]);
+
+  function loadScenario(scenario) {
+    scenarioTextEl.textContent = scenario.question;
+    answersEl.innerHTML = '';
+    stakeholdersAreaEl.innerHTML = '';
+    explanationEl.style.display = 'none';
+
+    // Build main action (radio) choices
+    scenario.choices.forEach((choice, idx) => {
+      const label = document.createElement('label');
+      label.className = 'answer-label';
+
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'mainAnswer';
+      radio.value = idx;
+
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(' ' + choice));
+      answersEl.appendChild(label);
+    });
+
+    // Build emoticon choices for each stakeholder
+    scenario.stakeholders.forEach((stakeholder, sIdx) => {
+      const stakeDiv = document.createElement('div');
+      stakeDiv.className = 'stakeholder-section';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'stakeholder-name';
+      nameEl.textContent = `Predict how ${stakeholder.name} will feel:`;
+      stakeDiv.appendChild(nameEl);
+
+      const emotionOptionsDiv = document.createElement('div');
+      emotionOptionsDiv.className = 'emotion-options';
+
+      EMOTICON_CHOICES.forEach(({ value, icon }) => {
+        // No "for / id" needed if we keep input & display together inside the label
+        const emotionLabel = document.createElement('label');
+        emotionLabel.className = 'emotion-label';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `stakeholder-${sIdx}`;
+        radio.value = value;
+
+        const emojiWrap = document.createElement('div');
+        emojiWrap.className = 'emoji-wrap';
+
+        const spanIcon = document.createElement('span');
+        spanIcon.className = 'emoji-icon';
+        spanIcon.textContent = icon;
+
+        const spanName = document.createElement('span');
+        spanName.className = 'emoji-name';
+        spanName.textContent = value;
+
+        emojiWrap.appendChild(spanIcon);
+        emojiWrap.appendChild(spanName);
+
+        emotionLabel.appendChild(radio);
+        emotionLabel.appendChild(emojiWrap);
+
+        emotionOptionsDiv.appendChild(emotionLabel);
+      });
+
+      stakeDiv.appendChild(emotionOptionsDiv);
+      stakeholdersAreaEl.appendChild(stakeDiv);
+    });
+
+    updateProgressBar();
+
+    submitBtn.classList.remove('hidden');
+    nextBtn.classList.add('hidden');
+  }
+
+  function updateProgressBar() {
+    const total = scenarios.length;
+    const current = currentScenarioIndex + 1;
+    const percent = (current / total) * 100;
+    progressBarEl.style.width = percent + '%';
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const scenario = scenarios[currentScenarioIndex];
+    const selectedRadio = document.querySelector('input[name="mainAnswer"]:checked');
+    if (!selectedRadio) {
+      alert('Please select your main answer!');
+      return;
+    }
+
+    // Collect emoticon guesses for each stakeholder
+    const stakeholderGuesses = scenario.stakeholders.map((_, sIdx) => {
+      const chosen = document.querySelector(`input[name="stakeholder-${sIdx}"]:checked`);
+      return chosen ? chosen.value : null;
+    });
+
+    // Check if any stakeholder guess is missing
+    const missingGuess = stakeholderGuesses.some(g => g === null);
+    if (missingGuess) {
+      alert('Please select an emotion for each stakeholder!');
+      return;
+    }
+
+    const answerIndex = parseInt(selectedRadio.value);
+
+    // Store user data
+    userChoices[currentScenarioIndex] = {
+      choiceIndex: answerIndex,
+      stakeholderGuesses
+    };
+
+    // -------- SCORING --------
+    let pointsEarned = 0;
+    // +1 if main action is correct
+    if (answerIndex === scenario.correctAnswer) {
+      pointsEarned++;
+    }
+    // +1 for each stakeholder whose predicted emotion matches
+    scenario.stakeholders.forEach((stakeholder, sIdx) => {
+      const correctEmotion = stakeholder.emotionsPerChoice[answerIndex];
+      const userGuess = stakeholderGuesses[sIdx];
+      if (userGuess === correctEmotion) {
+        pointsEarned++;
+      }
+    });
+
+    score += pointsEarned;
+    scoreEl.textContent = score;
+
+    // Show explanation
+    explanationEl.style.display = 'block';
+    if (answerIndex === scenario.correctAnswer) {
+      explanationEl.textContent = `Great job! ${scenario.explanation} (You earned ${pointsEarned} point(s).)`;
+    } else {
+      explanationEl.textContent = `Not the best choice. ${scenario.explanation} (You earned ${pointsEarned} point(s).)`;
+    }
+
+    submitBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentScenarioIndex++;
+    if (currentScenarioIndex < scenarios.length) {
+      loadScenario(scenarios[currentScenarioIndex]);
+    } else {
+      scenarioTextEl.textContent = `Game Over! Your final score is: ${score}`;
+      answersEl.innerHTML = '';
+      stakeholdersAreaEl.innerHTML = '';
+      explanationEl.style.display = 'none';
+      submitBtn.classList.add('hidden');
+      nextBtn.classList.add('hidden');
+
+      progressBarEl.style.width = '100%';
+
+      buildSummary();
+      summaryContainer.style.display = 'block';
+    }
+  });
+
+  function buildSummary() {
+    summaryContents.innerHTML = '';
+    scenarios.forEach((scenario, idx) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'summary-item';
+
+      const q = document.createElement('div');
+      q.className = 'summary-question';
+      q.textContent = (idx + 1) + '. ' + scenario.question;
+      itemDiv.appendChild(q);
+
+      const userData = userChoices[idx];
+      const userChoiceIndex = userData.choiceIndex;
+      const userChoiceText = scenario.choices[userChoiceIndex];
+      const correctChoiceText = scenario.choices[scenario.correctAnswer];
+
+      // Main answer correctness
+      const playerAnswerDiv = document.createElement('div');
+      if (userChoiceIndex === scenario.correctAnswer) {
+        playerAnswerDiv.innerHTML = `<strong>Your Action (Correct):</strong> <span class="correct">${userChoiceText}</span>`;
+      } else {
+        playerAnswerDiv.innerHTML = `<strong>Your Action (Incorrect):</strong> <span class="incorrect">${userChoiceText}</span>`;
+      }
+      itemDiv.appendChild(playerAnswerDiv);
+
+      // Correct action
+      const correctAnswerDiv = document.createElement('div');
+      correctAnswerDiv.className = 'summary-correct-answer';
+      correctAnswerDiv.innerHTML = `<strong>Correct Action:</strong> ${correctChoiceText}`;
+      itemDiv.appendChild(correctAnswerDiv);
+
+      // Stakeholder guesses
+      scenario.stakeholders.forEach((stakeholder, sIdx) => {
+        const guess = userData.stakeholderGuesses[sIdx];
+        const correctEmotion = stakeholder.emotionsPerChoice[userChoiceIndex];
+
+        const guessDiv = document.createElement('div');
+        if (guess === correctEmotion) {
+          guessDiv.innerHTML = `<strong>${stakeholder.name} (Correct Guess):</strong> <span class="correct">${guess}</span>`;
+        } else {
+          guessDiv.innerHTML = `<strong>${stakeholder.name} (Incorrect Guess):</strong> <span class="incorrect">${guess}</span> | Correct was <em>${correctEmotion}</em>`;
+        }
+        itemDiv.appendChild(guessDiv);
+      });
+
+      summaryContents.appendChild(itemDiv);
+    });
+  }
+</script>
+</body>
+</html>
