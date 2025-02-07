@@ -196,58 +196,57 @@
     "Confused": "😕"
   };
 
-  // Array of 10 questions with images using Unsplash Source.
-  // The URLs use keywords to try and reflect the image description.
+  // Array of 10 questions with images using Picsum Photos with seed parameters.
   const questions = [
     {
       text: "A child playing with a puppy",
       correct: "Happy",
-      image: "https://source.unsplash.com/600x300/?child,puppy"
+      image: "https://picsum.photos/seed/child-puppy/600/300"
     },
     {
       text: "A child dropping their ice cream",
       correct: "Sad",
-      image: "https://source.unsplash.com/600x300/?child,ice-cream"
+      image: "https://picsum.photos/seed/child-icecream/600/300"
     },
     {
       text: "A child being teased by classmates",
       correct: "Angry",
-      image: "https://source.unsplash.com/600x300/?child,teasing"
+      image: "https://picsum.photos/seed/child-teasing/600/300"
     },
     {
       text: "A child in a spooky house on Halloween",
       correct: "Scared",
-      image: "https://source.unsplash.com/600x300/?child,halloween"
+      image: "https://picsum.photos/seed/child-halloween/600/300"
     },
     {
       text: "A child winning a little prize",
       correct: "Excited",
-      image: "https://source.unsplash.com/600x300/?child,prize"
+      image: "https://picsum.photos/seed/child-prize/600/300"
     },
     {
       text: "A child looking at a broken toy",
       correct: "Worried",
-      image: "https://source.unsplash.com/600x300/?child,brokentoy"
+      image: "https://picsum.photos/seed/child-brokentoy/600/300"
     },
     {
       text: "A child amazed by a magic trick",
       correct: "Surprised",
-      image: "https://source.unsplash.com/600x300/?child,magic"
+      image: "https://picsum.photos/seed/child-magic/600/300"
     },
     {
       text: "A child quietly reading a book",
       correct: "Calm",
-      image: "https://source.unsplash.com/600x300/?child,reading"
+      image: "https://picsum.photos/seed/child-reading/600/300"
     },
     {
       text: "A child proudly showing a drawing",
       correct: "Proud",
-      image: "https://source.unsplash.com/600x300/?child,drawing"
+      image: "https://picsum.photos/seed/child-drawing/600/300"
     },
     {
       text: "A child looking puzzled while doing a puzzle",
       correct: "Confused",
-      image: "https://source.unsplash.com/600x300/?child,puzzle"
+      image: "https://picsum.photos/seed/child-puzzle/600/300"
     }
   ];
 
@@ -351,8 +350,7 @@
 
   // Move to the next question or finish the quiz if done.
   function nextQuestion() {
-    // If an answer wasn’t recorded (e.g., the student pressed "Next" without answering),
-    // automatically record the current selection.
+    // If an answer wasn’t recorded, automatically record the current selection.
     if (!userResponses[currentQuestionIndex]) {
       checkAnswer();
     }
