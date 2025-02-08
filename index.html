@@ -2,419 +2,1339 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Emotion Explorer (Slider Version)</title>
+  <title>SEL Adventures</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* ----- Basic Page & Colors ----- */
     body {
+      background: #f3f0ff;
+      font-family: "Segoe UI", Tahoma, sans-serif;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fef5ff;
-      color: #4a4a4a;
+      padding: 0;
+      color: #333;
+    }
+    h1, h2, h3 {
+      margin-bottom: 0.5rem;
+      color: #472e9c;
+    }
+    h4 {
+      margin: 0.5rem 0 0.3rem 0;
+      color: #5e4aa8;
+    }
+    p {
+      line-height: 1.4em;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Centered container for "Choose Adventure" screen */
+    #choose-adventure {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    #choose-adventure h1 {
+      margin-bottom: 1rem;
+    }
+    .adventure-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      padding: 1rem;
+      text-align: left;
+      border: 2px solid #f3eefc;
+      position: relative;
+    }
+    .card h2 {
+      color: #472e9c;
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+    }
+    .card button {
+      background: #a77af7;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .card button:hover {
+      background: #9567de;
+    }
+    .card.locked {
+      opacity: 0.6;
+    }
+    .card.locked button {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    .card.locked::after {
+      content: "Locked 🔒";
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      color: #472e9c;
+    }
+
+    /* "Error Loading Data" message (hidden by default) */
+    #error-message {
+      display: none;
+      max-width: 500px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      border: 2px solid #ffe4e4;
+    }
+    #error-message h2 {
+      color: red;
+      margin: 0.5rem 0;
+    }
+
+    /* ----- Scenario Container & Content ----- */
+    .container {
+      max-width: 900px;
+      margin: 1rem auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1rem 1.5rem;
+      display: none; /* hidden until shown */
+    }
+    /* Reusable button style in scenarios */
+    button {
+      background: #7e61d4;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background: #6f53be;
+    }
+    
+    /* ----- "Choose 3 changes" clickable tiles ----- */
+    .change-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 1rem;
     }
-    .container {
-      max-width: 600px;
-      width: 90%;
-      margin: 30px auto;
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      text-align: center;
+    .change-option {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .hidden { 
+    .change-option:hover {
+      background: #f2f2f2;
+    }
+    .change-option.selected {
+      background: #e6e0f7;
+      border-color: #7e61d4;
+    }
+    /* When changes are locked, the selection area won't respond to clicks */
+    .change-option.locked {
+      cursor: default;
+    }
+    /* Each change's stakeholder sliders will appear below the change text.
+       They remain hidden until confirmed. */
+    .stakeholder-sliders-for-change {
+      margin-top: 1rem;
       display: none;
     }
-    h1, h2 {
-      color: #883997;
-      margin-bottom: 10px;
+
+    /* Update stakeholder label styles to prevent overlapping */
+    .stakeholder-block {
+        background: #faf7ff;
+        border: 1px solid #dccff7;
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
     }
-    .question-text {
-      font-size: 1.2rem;
-      margin: 15px 0;
+
+    .stakeholder-label {
+        display: block;  /* Make label appear on its own line */
+        margin-bottom: 0.5rem;  /* Add space between label and slider */
+        font-weight: 500;
+        color: #472e9c;
     }
-    .question-image {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 10px;
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        position: relative;  /* Ensure proper stacking context */
     }
-    .slider-area {
-      margin: 20px 0;
+
+    .stakeholder-block input[type="range"] {
+        flex: 1;
+        margin: 0;  /* Remove default margins */
     }
-    .slider-area input[type="range"] {
-      width: 100%;
+
+    .emotion-display {
+        font-weight: 600;
+        color: #472e9c;
+        min-width: 100px;
+        text-align: right;
     }
-    .feedback {
-      margin-top: 15px;
-      font-size: 1rem;
-      min-height: 20px;
-    }
-    .results {
-      font-size: 1.2rem;
-      margin-top: 20px;
-    }
-    /* Emoji container styles */
-    .emoji-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-    }
-    .emoji-item {
-      text-align: center;
-      flex: 1;
-      transition: transform 0.2s ease, font-size 0.2s ease;
-      font-size: 24px;
-    }
-    .emoji-item.active {
-      transform: scale(1.3);
-      font-size: 30px;
-    }
-    .emoji-symbol {
-      display: block;
-    }
-    .emoji-name {
-      font-size: 0.8rem;
-      margin-top: 4px;
-    }
-    /* Review styles */
-    .review-container {
-      text-align: left;
-      margin-top: 20px;
-    }
-    .review-item {
-      border: 1px solid #ddd;
+
+    /* ----- Freedoms Placeholders ----- */
+    .experiment-area, .fail-area, .express-area, .share-area {
+      margin: 1rem 0;
+      padding: 0.8rem;
       border-radius: 6px;
-      padding: 10px;
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-      background: #f9f9f9;
     }
-    .review-image {
-      width: 100px;
-      height: auto;
+    .experiment-area {
+      background: #fff8de;
+      border: 1px dashed #f0c000;
+    }
+    .fail-area {
+      background: #ffeef0;
+      border: 1px dashed #ec4141;
+    }
+    .express-area {
+      background: #e6f7ff;
+      border: 1px dashed #00aaff;
+    }
+    .share-area {
+      background: #e9ffef;
+      border: 1px dashed #6be872;
+    }
+    .simulation-result {
+      background: #eef2ff;
+      border-left: 4px solid #7e61d4;
+      margin-top: 0.7rem;
+      padding: 0.6rem;
       border-radius: 4px;
-      margin-right: 10px;
+      display: none; /* Hidden until shown */
     }
-    .review-text p {
-      margin: 5px 0;
-      font-size: 1rem;
+
+    /* ----- Reflection / Discussion Containers ----- */
+    #reflection, #discussion-prep {
+      background: #faf7ff;
+      border: 1px solid #dccff7;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: none; /* hidden until needed */
     }
-    .review-header {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 1.1rem;
-      text-align: left;
+    textarea {
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
     }
-    /* Progress tracker styles */
-    #progressTracker {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
+
+    /* Add feedback message styling */
+    .feedback-message {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        min-height: 1.5em;
     }
+    .feedback-message.correct {
+        color: #2e8b57;
+    }
+    .feedback-message.incorrect {
+        color: #dc3545;
+    }
+    .score-display {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #472e9c;
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    /* Add styles for the check prediction button */
+    .check-prediction-btn {
+        background: #7e61d4;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+        width: 100%;
+    }
+
+    .check-prediction-btn:hover {
+        background: #6f53be;
+    }
+
+    .check-prediction-btn.checked {
+        background: #2e8b57;
+        cursor: default;
+    }
+
+    /* Update stakeholder block spacing */
+    .stakeholder-block {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .feedback-message {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    /* Add dissolve animation for unselected changes */
+    @keyframes dissolveOut {
+        0% { 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        100% { 
+            opacity: 0;
+            transform: scale(0.8);
+        }
+    }
+
+    .change-option.dissolving {
+        animation: dissolveOut 0.8s ease-out forwards;
+        pointer-events: none;
+    }
+
+    /* Lock button styles */
+    .check-prediction-btn.locked {
+        background: #808080;
+        cursor: not-allowed;
+    }
+
+    /* Hide express and share sections */
+    .express-area, .share-area {
+        display: none;
+    }
+
+    /* Remove experiment tab */
+    .experiment-area {
+        display: none;
+    }
+
+    /* Confetti styles */
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: #f00;
+        clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+        animation: fall 3s ease-out forwards;
+        z-index: 1000;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
   </style>
-  <!-- Load canvas-confetti library from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-<!-- Intro Screen -->
-<div class="container" id="introScreen">
-  <h1>Welcome to Emotion Explorer!</h1>
-  <p>Let’s learn about feelings with pictures!</p>
-  <button onclick="startQuiz()">Start Learning!</button>
-</div>
-
-<!-- Question Screen -->
-<div class="container hidden" id="questionScreen">
-  <!-- Progress Tracker -->
-  <div id="progressTracker">Question 1 of 10</div>
-
-  <img id="questionImage" class="question-image" src="" alt="Question Image">
-  <div id="questionText" class="question-text"></div>
-
-  <div class="slider-area">
-    <label for="emotionSlider">How do you think they feel?</label><br>
-    <input 
-      type="range" 
-      min="0" 
-      max="9" 
-      value="0" 
-      step="1" 
-      id="emotionSlider" 
-      oninput="updateEmotionLabel(this.value)">
+  <!-- "Choose Your Adventure" Intro Screen -->
+  <div id="choose-adventure">
+    <h1>Choose Your Adventure <span>🤹</span></h1>
+    <p>Select an adventure to begin your emotional intelligence journey!</p>
+    <div class="adventure-cards">
+      <!-- Ice Cream Shop Adventure -->
+      <div class="card" id="card-icecream">
+        <h2>Ice Cream Shop Adventures</h2>
+        <p>Experience different perspectives in a busy ice cream shop!</p>
+        <button onclick="startIceCream()">Start This Adventure</button>
+      </div>
+      <!-- Library Learning Center (locked at first) -->
+      <div class="card locked" id="card-library">
+        <h2>Library Learning Center</h2>
+        <p>Complete the Ice Cream Shop adventure first to unlock this!</p>
+        <button disabled>Locked</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Emoji bar below the slider -->
-  <div id="emojiContainer" class="emoji-container"></div>
-  
-  <!-- The Check Answer and Next buttons -->
-  <button id="checkAnswerBtn" onclick="checkAnswer()">This is the feeling! 👍</button>
-  <div id="feedback" class="feedback"></div>
-  <button id="nextQuestionBtn" onclick="nextQuestion()" style="margin-top: 15px;" disabled>Next</button>
-</div>
+  <!-- Error Loading Data (optional, shown if something fails) -->
+  <div id="error-message">
+    <h2>Error Loading Data</h2>
+    <p>Unable to load user status. Please try again.</p>
+    <button onclick="backToAdventures()">Back to Adventures</button>
+  </div>
 
-<!-- Result & Review Screen -->
-<div class="container hidden" id="resultScreen">
-  <h2>All Done!</h2>
-  <p class="results">You got <span id="score"></span> out of 10!</p>
-  <!-- Review Section -->
-  <div class="review-header">Review Your Answers:</div>
-  <div id="reviewContainer" class="review-container"></div>
-  <button onclick="restartQuiz()">Play Again</button>
-</div>
+  <!-- SCENARIO 1: ICE CREAM STORE -->
+  <div class="container" id="ice-scenario">
+    <h2>Scenario: Ice Cream Shop</h2>
+    <p>Start by selecting <strong>3 changes</strong> from the options below.</p>
+    
+    <!-- Each change option includes its own stakeholder reactions.
+         Note: The stakeholder slider panels remain hidden until confirmation. -->
+    <h4>Choose 3 changes for your Ice Cream Store</h4>
+    <ul class="change-list" id="changeList">
+      <!-- Change Option 1 -->
+      <li class="change-option" 
+          onclick="toggleChange(this, 'Add new exotic flavors like &quot;Dragon Fruit Delight&quot; and &quot;Chocolate Volcano&quot;')" 
+          data-emp="1" data-cust="0" data-comp="7">
+        <div class="change-text">
+          Add new exotic flavors like "Dragon Fruit Delight" and "Chocolate Volcano"
+        </div>
+        <div class="stakeholder-sliders-for-change">
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">👨‍💼 Employees</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="1" data-role="emp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😄 Excited</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;" 
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🧑‍🤝‍🧑 Customers</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="0" data-role="cust"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😊 Happy</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🏪 Competitors</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="7" data-role="comp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😠 Annoyed</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Change Option 2 -->
+      <li class="change-option" 
+          onclick="toggleChange(this, 'Raise prices by 20% to use premium ingredients')" 
+          data-emp="4" data-cust="6" data-comp="2">
+        <div class="change-text">
+          Raise prices by 20% to use premium ingredients
+        </div>
+        <div class="stakeholder-sliders-for-change">
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">👨‍💼 Employees</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="4" data-role="emp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😐 Neutral</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;" 
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🧑‍🤝‍🧑 Customers</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="6" data-role="cust"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😟 Upset</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🏪 Competitors</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="2" data-role="comp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😎 Proud</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Change Option 3 -->
+      <li class="change-option" 
+          onclick="toggleChange(this, 'Create a mobile ice cream truck service')" 
+          data-emp="1" data-cust="1" data-comp="7">
+        <div class="change-text">
+          Create a mobile ice cream truck service
+        </div>
+        <div class="stakeholder-sliders-for-change">
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">👨‍💼 Employees</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="1" data-role="emp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😄 Excited</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;" 
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🧑‍🤝‍🧑 Customers</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="1" data-role="cust"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😄 Excited</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🏪 Competitors</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="7" data-role="comp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😠 Annoyed</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Change Option 4 -->
+      <li class="change-option" 
+          onclick="toggleChange(this, 'Replace some staff with self-serve machines')" 
+          data-emp="6" data-cust="4" data-comp="0">
+        <div class="change-text">
+          Replace some staff with self-serve machines
+        </div>
+        <div class="stakeholder-sliders-for-change">
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">👨‍💼 Employees</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="6" data-role="emp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😟 Upset</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;" 
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🧑‍🤝‍🧑 Customers</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="4" data-role="cust"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😐 Neutral</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🏪 Competitors</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="0" data-role="comp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😊 Happy</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Change Option 5 -->
+      <li class="change-option" 
+          onclick="toggleChange(this, 'Start a loyalty program with digital points')" 
+          data-emp="4" data-cust="0" data-comp="5">
+        <div class="change-text">
+          Start a loyalty program with digital points
+        </div>
+        <div class="stakeholder-sliders-for-change">
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">👨‍💼 Employees</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="4" data-role="emp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😐 Neutral</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;" 
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🧑‍🤝‍🧑 Customers</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="0" data-role="cust"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😊 Happy</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+          <div class="stakeholder-block">
+            <span class="stakeholder-label">🏪 Competitors</span>
+            <div class="slider-container">
+              <input type="range" min="0" max="9" value="5" data-role="comp"
+                     oninput="showCheckButton(this)" />
+              <span class="emotion-display">😕 Confused</span>
+            </div>
+            <button class="check-prediction-btn" style="display: none;"
+                    onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                This is what I think! 🤔
+            </button>
+            <div class="feedback-message"></div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="button-group" style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
+        <button id="confirmBtn" onclick="confirmVChanges()" disabled>
+            Confirm Selections
+        </button>
+        <button id="completeBtn" onclick="checkAllPredictions()" style="display: none;">
+            Complete & Get Feedback
+        </button>
+    </div>
 
-<script>
-  // List of emotions in order for the slider
-  const emotions = [
-    "Happy", 
-    "Sad", 
-    "Angry", 
-    "Scared", 
-    "Excited", 
-    "Worried", 
-    "Surprised", 
-    "Calm", 
-    "Proud", 
-    "Confused"
-  ];
+    <div class="score-summary" style="display: none; margin: 2rem 0; padding: 1rem; background: #f8f4ff; border-radius: 8px;">
+        <h3 style="text-align: center; color: #472e9c;">Your Understanding Score</h3>
+        <div id="score-details"></div>
+    </div>
 
-  // Mapping from emotion names to emoji symbols
-  const emotionEmojis = {
-    "Happy": "😀",
-    "Sad": "😢",
-    "Angry": "😠",
-    "Scared": "😱",
-    "Excited": "🤩",
-    "Worried": "😟",
-    "Surprised": "😮",
-    "Calm": "😌",
-    "Proud": "😎",
-    "Confused": "😕"
-  };
+    <!-- Experiment area using the new simulation function -->
+    <div class="experiment-area">
+      <h4>Experiment</h4>
+      <p>
+        Simulate your changes: 
+        <button onclick="simulateIceCream()">Test Changes</button>
+        <button onclick="resetScenario('ice-scenario')">Reset</button>
+      </p>
+      <div id="ice-sim-result" class="simulation-result"></div>
+    </div>
+    
+    <div class="fail-area">
+      <h4>Fail & Learn</h4>
+      <p>It's okay if an idea doesn't work. Mistakes help us learn!</p>
+    </div>
+    <div class="express-area">
+      <h4>Express</h4>
+      <p>You can quickly tap an icon to express how you feel about the store changes.</p>
+      <textarea placeholder="Express your idea..."></textarea>
+    </div>
+    <div class="share-area">
+      <h4>Share</h4>
+      <p>Share your ice cream ideas with friends or classmates!</p>
+      <textarea placeholder="Your sharing plan..."></textarea>
+    </div>
+    
+    <!-- New completion button, initially disabled -->
+    <button id="complete-ice-cream" onclick="completeIceCream()" disabled style="display: block; margin: 2rem auto; padding: 1rem 2rem; font-size: 1.2rem;">
+        Complete Ice Cream Adventure
+    </button>
+  </div>
 
-  // Array of 10 questions with images using Picsum Photos with seed parameters.
-  const questions = [
-    {
-      text: "A child playing with a puppy",
-      correct: "Happy",
-      image: "https://picsum.photos/seed/child-puppy/600/300"
-    },
-    {
-      text: "A child dropping their ice cream",
-      correct: "Sad",
-      image: "https://picsum.photos/seed/child-icecream/600/300"
-    },
-    {
-      text: "A child being teased by classmates",
-      correct: "Angry",
-      image: "https://picsum.photos/seed/child-teasing/600/300"
-    },
-    {
-      text: "A child in a spooky house on Halloween",
-      correct: "Scared",
-      image: "https://picsum.photos/seed/child-halloween/600/300"
-    },
-    {
-      text: "A child winning a little prize",
-      correct: "Excited",
-      image: "https://picsum.photos/seed/child-prize/600/300"
-    },
-    {
-      text: "A child looking at a broken toy",
-      correct: "Worried",
-      image: "https://picsum.photos/seed/child-brokentoy/600/300"
-    },
-    {
-      text: "A child amazed by a magic trick",
-      correct: "Surprised",
-      image: "https://picsum.photos/seed/child-magic/600/300"
-    },
-    {
-      text: "A child quietly reading a book",
-      correct: "Calm",
-      image: "https://picsum.photos/seed/child-reading/600/300"
-    },
-    {
-      text: "A child proudly showing a drawing",
-      correct: "Proud",
-      image: "https://picsum.photos/seed/child-drawing/600/300"
-    },
-    {
-      text: "A child looking puzzled while doing a puzzle",
-      correct: "Confused",
-      image: "https://picsum.photos/seed/child-puzzle/600/300"
-    }
-  ];
+  <!-- SCENARIO 2: LIBRARY LEARNING CENTER -->
+  <div class="container" id="library-scenario">
+    <h2>Scenario: Library Learning Center</h2>
+    <p>Now that you've completed the Ice Cream Shop, try adding 3 improvements for a library environment.</p>
+    <div class="input-group">
+      <label>Change #1:</label>
+      <input type="text" id="lib-change1" placeholder="e.g., more computers" />
+    </div>
+    <div class="input-group">
+      <label>Change #2:</label>
+      <input type="text" id="lib-change2" placeholder="e.g., quiet study rooms" />
+    </div>
+    <div class="input-group">
+      <label>Change #3:</label>
+      <input type="text" id="lib-change3" placeholder="e.g., reading events" />
+    </div>
+    <div class="stakeholder-sliders">
+      <div class="stakeholder-block">
+        <img src="images/employee.png" alt="Librarians" />
+        <!-- Removed text label for simplicity -->
+        <input type="range" min="0" max="9" value="0" oninput="updateEmotion(this, 'lib-emp-emoji')" id="lib-emp-slider"/>
+        <span class="emotion-display" id="lib-emp-emoji">😊 Happy</span>
+      </div>
+      <div class="stakeholder-block">
+        <img src="images/customer.png" alt="Patrons" />
+        <!-- Removed text label for simplicity -->
+        <input type="range" min="0" max="9" value="0" oninput="updateEmotion(this, 'lib-patron-emoji')" id="lib-patron-slider"/>
+        <span class="emotion-display" id="lib-patron-emoji">😊 Happy</span>
+      </div>
+      <div class="stakeholder-block">
+        <img src="images/competitor.png" alt="Community" />
+        <!-- Removed text label for simplicity -->
+        <input type="range" min="0" max="9" value="0" oninput="updateEmotion(this, 'lib-comm-emoji')" id="lib-comm-slider"/>
+        <span class="emotion-display" id="lib-comm-emoji">😊 Happy</span>
+      </div>
+    </div>
+    <div class="experiment-area">
+      <h4>Experiment</h4>
+      <p>
+        Simulate your changes: 
+        <button onclick="simulateLibrary()">Test Changes</button>
+        <button onclick="resetScenario('library-scenario')">Reset</button>
+      </p>
+      <div id="lib-sim-result" class="simulation-result"></div>
+    </div>
+    <div class="fail-area">
+      <h4>Fail & Learn</h4>
+      <p>Not all ideas will work right away. Learn from each attempt!</p>
+    </div>
+    <div class="express-area">
+      <h4>Express</h4>
+      <p>Quickly tap an icon to share how these library improvements feel to you:</p>
+      <textarea placeholder="Express your idea..."></textarea>
+    </div>
+    <div class="share-area">
+      <h4>Share</h4>
+      <p>Share your library ideas with your class or community!</p>
+      <textarea placeholder="Share your plan..."></textarea>
+    </div>
+  </div>
 
-  let currentQuestionIndex = 0;
-  let scoreCount = 0;
-  let userResponses = []; // To store each answer for review
+  <!-- Reflection & Discussion Containers -->
+  <div class="container" id="reflection">
+    <h2>Reflection</h2>
+    <p>What did you learn about your emotions, other people's feelings, and decision-making?</p>
+    <textarea placeholder="Write your reflection..."></textarea>
+  </div>
 
-  // Screen elements
-  const introScreen    = document.getElementById("introScreen");
-  const questionScreen = document.getElementById("questionScreen");
-  const resultScreen   = document.getElementById("resultScreen");
+  <div class="container" id="discussion-prep">
+    <h2>Class Discussion Preparation</h2>
+    <p>Think about these questions for the next group talk!</p>
+    <textarea placeholder="Possible questions or notes..."></textarea>
+  </div>
 
-  const progressTracker = document.getElementById("progressTracker");
-  const questionText   = document.getElementById("questionText");
-  const questionImage  = document.getElementById("questionImage");
-  const emotionSlider  = document.getElementById("emotionSlider");
-  const feedback       = document.getElementById("feedback");
-  const scoreSpan      = document.getElementById("score");
-
-  const checkAnswerBtn = document.getElementById("checkAnswerBtn");
-  const nextQuestionBtn = document.getElementById("nextQuestionBtn");
-
-  // Start the quiz by resetting values and showing the first question
-  function startQuiz() {
-    scoreCount = 0;
-    currentQuestionIndex = 0;
-    userResponses = [];
-    introScreen.classList.add("hidden");
-    resultScreen.classList.add("hidden");
-    questionScreen.classList.remove("hidden");
-    loadQuestion(0);
-  }
-
-  // Load a question (with image and text), reset slider/feedback, update progress, and button states.
-  function loadQuestion(index) {
-    const q = questions[index];
-    questionText.textContent = q.text;
-    questionImage.src = q.image;
-    feedback.textContent = "";
-    // Update progress tracker
-    progressTracker.textContent = `Question ${index + 1} of ${questions.length}`;
-    // Reset slider to 0 for each question and update the emoji bar
-    emotionSlider.value = 0;
-    updateActiveEmoji(0);
-    // Enable the check answer button and disable the next button
-    checkAnswerBtn.disabled = false;
-    nextQuestionBtn.disabled = true;
-  }
-
-  // Update which emoji is highlighted as the slider moves
-  function updateEmotionLabel(value) {
-    updateActiveEmoji(parseInt(value));
-  }
-
-  function updateActiveEmoji(activeIndex) {
-    const emojiItems = document.querySelectorAll('.emoji-item');
-    emojiItems.forEach(item => {
-      const index = parseInt(item.getAttribute('data-index'));
-      if (index === activeIndex) {
-        item.classList.add('active');
+  <script>
+    // =========================
+    // EMOJI SLIDER LOGIC
+    // =========================
+    const emotionNames = [
+      "Happy", "Excited", "Proud", "Relieved", "Neutral",
+      "Confused", "Upset", "Annoyed", "Angry", "Embarrassed"
+    ];
+    const emotionEmojis = [
+      "😊", "😄", "😎", "😌", "😐",
+      "😕", "😟", "😠", "😡", "😳"
+    ];
+    function updateEmotion(slider, labelElOrId) {
+      const value = parseInt(slider.value);
+      let labelEl;
+      if (typeof labelElOrId === 'string') {
+        labelEl = document.getElementById(labelElOrId);
       } else {
-        item.classList.remove('active');
+        labelEl = labelElOrId;
       }
-    });
-  }
-
-  // When the student clicks to check their answer, record it and give feedback.
-  // Then disable the "This is the feeling!" button and enable the "Next" button.
-  function checkAnswer() {
-    const userIndex = parseInt(emotionSlider.value);
-    const userEmotion = emotions[userIndex];
-    const correctEmotion = questions[currentQuestionIndex].correct;
-    const isCorrect = userEmotion === correctEmotion;
-
-    if (isCorrect) {
-      feedback.textContent = "Correct! " + emotionEmojis[correctEmotion] + " ✅";
-      scoreCount++;
-      // Confetti pop on correct answer!
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-    } else {
-      feedback.textContent = "Oops! " + emotionEmojis[correctEmotion] + " is the right feeling. ❌";
+      if (labelEl) {
+        labelEl.textContent = emotionEmojis[value] + " " + emotionNames[value];
+      }
     }
 
-    // Record the response for later review
-    userResponses[currentQuestionIndex] = {
-      question: questions[currentQuestionIndex].text,
-      image: questions[currentQuestionIndex].image,
-      correctEmotion: correctEmotion,
-      userEmotion: userEmotion,
-      isCorrect: isCorrect
+    // =========================
+    // START/ERROR NAVIGATION
+    // =========================
+    function showErrorMessage() {
+      document.getElementById('choose-adventure').style.display = 'none';
+      document.getElementById('error-message').style.display = 'block';
+    }
+    function backToAdventures() {
+      document.getElementById('error-message').style.display = 'none';
+      document.getElementById('choose-adventure').style.display = 'block';
+    }
+
+    // =========================
+    // ICE CREAM: CHANGES WITH STAKEHOLDER REACTIONS
+    // =========================
+    let selectedChanges = [];
+
+    function startIceCream() {
+      selectedChanges = [];
+      currentScore = 0;
+      totalAttempts = 0;
+      
+      document.querySelectorAll('.change-option').forEach(option => {
+        option.classList.remove('selected', 'locked', 'dissolving');
+        option.style.display = 'block';
+        delete option.dataset.locked;
+        const sliderContainer = option.querySelector('.stakeholder-sliders-for-change');
+        if (sliderContainer) {
+          sliderContainer.style.display = 'none';
+        }
+      });
+
+      // Reset all sliders and buttons
+      document.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.disabled = false;
+        slider.value = 0;
+        updateEmotion(slider, slider.nextElementSibling);
+      });
+
+      document.querySelectorAll('.check-prediction-btn').forEach(button => {
+        button.classList.remove('locked');
+        button.textContent = 'This is what I think! 🤔';
+        button.style.display = 'none';
+      });
+
+      document.querySelectorAll('.feedback-message').forEach(div => {
+        div.textContent = '';
+        div.className = 'feedback-message';
+      });
+
+      document.getElementById('confirmBtn').disabled = true;
+      document.getElementById('complete-ice-cream').disabled = true;
+      
+      // Reset fail/learn section
+      const failArea = document.querySelector('.fail-area');
+      if (failArea) {
+        failArea.innerHTML = '<h4>Fail & Learn</h4><p>It\'s okay if an idea doesn\'t work. Mistakes help us learn!</p>';
+      }
+
+      document.getElementById('choose-adventure').style.display = 'none';
+      document.getElementById('ice-scenario').style.display = 'block';
+
+      // Reset score summary
+      const scoreSummary = document.querySelector('.score-summary');
+      if (scoreSummary) {
+          scoreSummary.style.display = 'none';
+      }
+      
+      // Reset buttons
+      document.getElementById('confirmBtn').style.display = 'block';
+      document.getElementById('confirmBtn').disabled = true;
+      document.getElementById('completeBtn').style.display = 'none';
+      document.getElementById('completeBtn').disabled = false;
+    }
+
+    // Toggle change selection.
+    // The stakeholder slider panels remain hidden until confirmation.
+    function toggleChange(element, changeValue) {
+      if (element.dataset.locked === "true") return;  // Do not allow changes if locked
+      
+      if (selectedChanges.includes(changeValue)) {
+        // Unselect this change
+        selectedChanges = selectedChanges.filter(ch => ch !== changeValue);
+        element.classList.remove('selected');
+      } else {
+        // Limit to 3 selections
+        if (selectedChanges.length >= 3) {
+          alert("You can only select 3 changes.");
+          return;
+        }
+        selectedChanges.push(changeValue);
+        element.classList.add('selected');
+      }
+      // Enable Confirm button only if exactly 3 changes are selected
+      document.getElementById('confirmBtn').disabled = (selectedChanges.length !== 3);
+    }
+
+    // Update the predefined emotions and feedback for ALL changes
+    const changeEmotions = {
+        'Add new exotic flavors': {
+            emp: {
+                value: 1,
+                correct: "Employees are excited about learning to make new flavors!",
+                incorrect: "Think about how employees might feel about creating new and interesting products."
+            },
+            cust: {
+                value: 0,
+                correct: "Customers are happy to try exciting new flavors!",
+                incorrect: "Consider how customers typically react to new and unique options."
+            },
+            comp: {
+                value: 7,
+                correct: "Competitors are annoyed because they might lose customers to these unique flavors.",
+                incorrect: "Think about how competing businesses feel when someone offers something they don't have."
+            }
+        },
+        'Raise prices': {
+            emp: {
+                value: 4,
+                correct: "Employees feel neutral as it doesn't directly affect them.",
+                incorrect: "Consider how price changes might affect employee tips and customer interactions."
+            },
+            cust: {
+                value: 6,
+                correct: "Customers are upset about paying more, even for better quality.",
+                incorrect: "Think about how people typically react to price increases."
+            },
+            comp: {
+                value: 2,
+                correct: "Competitors are proud because they can advertise lower prices.",
+                incorrect: "Consider how competing businesses benefit from having lower prices."
+            }
+        },
+        'Create a mobile ice cream': {
+            emp: {
+                value: 1,
+                correct: "Employees are excited about the new mobile experience!",
+                incorrect: "Think about how employees might feel about a new way to serve customers."
+            },
+            cust: {
+                value: 1,
+                correct: "Customers are excited about getting ice cream closer to home!",
+                incorrect: "Consider how customers feel about easier access to ice cream."
+            },
+            comp: {
+                value: 7,
+                correct: "Competitors are annoyed about losing local customers.",
+                incorrect: "Think about how competitors feel when you expand into their territory."
+            }
+        },
+        'Replace some staff': {
+            emp: {
+                value: 6,
+                correct: "Employees are upset about potential job losses.",
+                incorrect: "Consider how employees feel about automation replacing jobs."
+            },
+            cust: {
+                value: 4,
+                correct: "Customers feel neutral about self-service options.",
+                incorrect: "Think about how customers react to self-service versus personal service."
+            },
+            comp: {
+                value: 0,
+                correct: "Competitors are happy they can advertise their personal service.",
+                incorrect: "Consider how competitors might use this change in their favor."
+            }
+        },
+        'Start a loyalty program': {
+            emp: {
+                value: 4,
+                correct: "Employees feel neutral about managing a new system.",
+                incorrect: "Think about how employees feel about learning a new process."
+            },
+            cust: {
+                value: 0,
+                correct: "Customers are happy about earning rewards!",
+                incorrect: "Consider how customers feel about getting free ice cream."
+            },
+            comp: {
+                value: 5,
+                correct: "Competitors are confused about whether to copy the program.",
+                incorrect: "Think about how competitors react to customer loyalty programs."
+            }
+        }
     };
 
-    // Disable the check answer button and enable the next button.
-    checkAnswerBtn.disabled = true;
-    nextQuestionBtn.disabled = false;
-  }
+    let currentScore = 0;
+    let totalAttempts = 0;
 
-  // Move to the next question or finish the quiz if done.
-  function nextQuestion() {
-    // If an answer wasn’t recorded, automatically record the current selection.
-    if (!userResponses[currentQuestionIndex]) {
-      checkAnswer();
+    function showCheckButton(slider) {
+        const stakeholderBlock = slider.closest('.stakeholder-block');
+        const checkButton = stakeholderBlock.querySelector('.check-prediction-btn');
+        const feedbackMessage = stakeholderBlock.querySelector('.feedback-message');
+        
+        // Update emotion display
+        updateEmotion(slider, slider.nextElementSibling);
+        
+        // Show check button if not already checked
+        if (!checkButton.classList.contains('checked')) {
+            checkButton.style.display = 'block';
+        }
+        
+        // Clear previous feedback
+        feedbackMessage.textContent = '';
+        feedbackMessage.className = 'feedback-message';
     }
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-      loadQuestion(currentQuestionIndex);
-    } else {
-      endQuiz();
+
+    function checkPrediction(slider) {
+        const stakeholderBlock = slider.closest('.stakeholder-block');
+        const checkButton = stakeholderBlock.querySelector('.check-prediction-btn');
+        const changeOption = slider.closest('.change-option');
+        
+        if (!changeOption || !changeOption.classList.contains('selected')) return;
+        if (checkButton.classList.contains('locked')) return;
+
+        const changeText = changeOption.querySelector('.change-text').textContent.trim();
+        const role = slider.dataset.role;
+        const value = parseInt(slider.value);
+        const feedbackDiv = stakeholderBlock.querySelector('.feedback-message');
+        
+        let isCorrect = false;
+        
+        for (let [key, emotions] of Object.entries(changeEmotions)) {
+            if (changeText.includes(key)) {
+                const correctValue = emotions[role].value;
+                
+                if (value === correctValue) {
+                    feedbackDiv.textContent = "✅ " + emotions[role].correct;
+                    feedbackDiv.className = 'feedback-message correct';
+                    if (!slider.dataset.scored) {
+                        currentScore++;
+                        slider.dataset.scored = 'true';
+                    }
+                    isCorrect = true;
+                    createConfetti(true); // Create confetti for correct answer
+                } else {
+                    feedbackDiv.textContent = "❌ " + emotions[role].incorrect;
+                    feedbackDiv.className = 'feedback-message incorrect';
+                    slider.dataset.scored = 'false';
+                }
+                
+                totalAttempts++;
+                updateScoreDisplay();
+                updateFailLearnSection(changeText, role, isCorrect, value);
+                
+                break;
+            }
+        }
+        
+        // Lock the prediction
+        checkButton.classList.add('locked');
+        checkButton.textContent = 'Prediction Locked! 🔒';
+        slider.disabled = true;
     }
-  }
 
-  // End the quiz and show the score plus a review of all answers.
-  function endQuiz() {
-    questionScreen.classList.add("hidden");
-    resultScreen.classList.remove("hidden");
-    scoreSpan.textContent = scoreCount;
-    generateReview();
-  }
-
-  // Build the review section to show each question with its image, the student's answer, and the correct answer.
-  function generateReview() {
-    const reviewContainer = document.getElementById('reviewContainer');
-    reviewContainer.innerHTML = '';
-    for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      const response = userResponses[i] || {};  // In case a response was not recorded
-      const reviewDiv = document.createElement('div');
-      reviewDiv.classList.add('review-item');
-      reviewDiv.innerHTML = `
-        <img src="${q.image}" alt="Question Image" class="review-image">
-        <div class="review-text">
-          <p><strong>Q${i+1}:</strong> ${q.text}</p>
-          <p>Your answer: ${emotionEmojis[response.userEmotion] || ""} ${response.userEmotion || "No answer"} ${response.isCorrect ? "✅" : "❌"}</p>
-          <p>Right answer: ${emotionEmojis[q.correct]} ${q.correct}</p>
-        </div>
-      `;
-      reviewContainer.appendChild(reviewDiv);
+    function updateScoreDisplay() {
+        let scoreDiv = document.querySelector('.score-display');
+        if (!scoreDiv) {
+            scoreDiv = document.createElement('div');
+            scoreDiv.className = 'score-display';
+            document.querySelector('#ice-scenario').insertBefore(
+                scoreDiv,
+                document.querySelector('#ice-scenario button')
+            );
+        }
+        const percentage = Math.round((currentScore / totalAttempts) * 100) || 0;
+        scoreDiv.textContent = `Score: ${currentScore} / ${totalAttempts} (${percentage}%)`;
     }
-  }
 
-  // Reset the quiz back to the intro screen.
-  function restartQuiz() {
-    resultScreen.classList.add("hidden");
-    introScreen.classList.remove("hidden");
-  }
+    // Add function to update fail/learn section
+    function updateFailLearnSection(changeText, role, isCorrect, value) {
+        const failArea = document.querySelector('.fail-area');
+        if (!failArea) return;
 
-  // Render emoji options below the slider.
-  function renderEmojiOptions() {
-    const container = document.getElementById('emojiContainer');
-    container.innerHTML = '';
-    for (let i = 0; i < emotions.length; i++) {
-      const emojiDiv = document.createElement('div');
-      emojiDiv.classList.add('emoji-item');
-      emojiDiv.setAttribute('data-index', i);
-      emojiDiv.innerHTML = `
-        <div class="emoji-symbol">${emotionEmojis[emotions[i]]}</div>
-        <div class="emoji-name">${emotions[i]}</div>
-      `;
-      container.appendChild(emojiDiv);
+        let stakeholderName = role === 'emp' ? 'Employees' : 
+                             role === 'cust' ? 'Customers' : 'Competitors';
+        
+        // Find the correct emotion for comparison
+        let correctEmotion = null;
+        let userEmotion = emotionNames[value];
+        
+        for (let [key, emotions] of Object.entries(changeEmotions)) {
+            if (changeText.includes(key)) {
+                correctEmotion = emotionNames[emotions[role].value];
+                break;
+            }
+        }
+
+        if (isCorrect) {
+            failArea.innerHTML = `
+                <h4>Great Understanding! 🌟</h4>
+                <p>You correctly predicted that ${stakeholderName} would feel ${correctEmotion} about this change.</p>
+                <p>This shows great empathy and business thinking!</p>
+            `;
+        } else {
+            failArea.innerHTML = `
+                <h4>Learning Opportunity! 🤔</h4>
+                <p>You thought ${stakeholderName} would feel ${userEmotion}, but they might actually feel ${correctEmotion}.</p>
+                <p>Think about:</p>
+                <ul>
+                    <li>How does this change affect their daily routine?</li>
+                    <li>What are their main priorities?</li>
+                    <li>How might this impact their success/satisfaction?</li>
+                </ul>
+            `;
+        }
     }
-  }
 
-  // Initialize emoji options on page load.
-  renderEmojiOptions();
-</script>
+    function simulateIceCream() {
+        const resultEl = document.getElementById("ice-sim-result");
+        if (selectedChanges.length < 3) {
+            resultEl.textContent = "Please select 3 changes before testing.";
+        } else {
+            const {score, maxScore} = checkEmotions();
+            let message = `Score: ${score}/${maxScore} correct emotions!\n\n`;
+            message += "Keep adjusting the emotion sliders to match how each group might really feel!";
+            resultEl.textContent = message;
+        }
+        resultEl.style.display = "block";
+    }
+
+    function completeIceCream() {
+        const {score, maxScore} = checkEmotions();
+        if (score >= Math.floor(maxScore * 0.7)) { // 70% correct to pass
+            // Unlock the Library adventure
+            const libraryCard = document.getElementById('card-library');
+            libraryCard.classList.remove('locked');
+            const libButton = libraryCard.querySelector('button');
+            libButton.disabled = false;
+            libButton.onclick = startLibrary;
+            libButton.textContent = "Start This Adventure";
+            
+            // Show success message
+            alert(`Congratulations! You scored ${score}/${maxScore} and unlocked the Library Adventure!`);
+            // Return to adventure selection
+            document.getElementById('ice-scenario').style.display = 'none';
+            document.getElementById('choose-adventure').style.display = 'block';
+        } else {
+            alert(`You scored ${score}/${maxScore}. Try to get at least ${Math.floor(maxScore * 0.7)} correct to complete this adventure!`);
+        }
+    }
+
+    // Confirm the changes.
+    // This will lock the selected changes and then reveal their stakeholder slider panels.
+    function confirmVChanges() {
+      if (selectedChanges.length !== 3) {
+        alert("Please select exactly 3 changes.");
+        return;
+      }
+
+      document.querySelectorAll('.change-option').forEach(item => {
+        if (!item.classList.contains('selected')) {
+          item.classList.add('dissolving');
+          // Remove the element after animation
+          setTimeout(() => {
+            item.style.display = 'none';
+          }, 800); // Match this with the animation duration
+        } else {
+          item.dataset.locked = "true";
+          item.classList.add('locked');
+          let sliderContainer = item.querySelector('.stakeholder-sliders-for-change');
+          if (sliderContainer) {
+            sliderContainer.style.display = 'block';
+          }
+        }
+      });
+
+      document.getElementById('completeBtn').style.display = 'block';
+      document.getElementById('confirmBtn').style.display = 'none';
+
+      alert("Your ice cream changes are confirmed! Adjust the emotion sliders and click 'This is what I think' for each stakeholder.");
+    }
+
+    // =========================
+    // LIBRARY SCENARIO
+    // =========================
+    function startLibrary() {
+      // Hide the main screen or ice scenario if still visible
+      document.getElementById('choose-adventure').style.display = 'none';
+      document.getElementById('ice-scenario').style.display = 'none';
+      // Show the library scenario container
+      document.getElementById('library-scenario').style.display = 'block';
+    }
+
+    function simulateLibrary() {
+      const c1 = document.getElementById("lib-change1").value.trim();
+      const c2 = document.getElementById("lib-change2").value.trim();
+      const c3 = document.getElementById("lib-change3").value.trim();
+      const resultEl = document.getElementById("lib-sim-result");
+
+      if(!c1 && !c2 && !c3) {
+        resultEl.textContent = "No changes added yet!";
+      } else {
+        resultEl.textContent = "Your Library ideas could help librarians and patrons, while the community may welcome new services. Keep refining your approach!";
+      }
+      resultEl.style.display = "block";
+    }
+
+    // =========================
+    // RESET SCENARIOS
+    // =========================
+    function resetScenario(containerId) {
+      const container = document.getElementById(containerId);
+
+      // Reset text inputs
+      container.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+
+      // For the ice cream scenario, unselect change tiles and hide their stakeholder panels
+      if (containerId === 'ice-scenario') {
+        selectedChanges = [];
+        const tiles = container.querySelectorAll('.change-option');
+        tiles.forEach(t => {
+          t.classList.remove('selected', 'locked', 'dissolving');
+          delete t.dataset.locked;
+          let sliderContainer = t.querySelector('.stakeholder-sliders-for-change');
+          if (sliderContainer) {
+            sliderContainer.style.display = 'none';
+          }
+        });
+        document.getElementById('confirmBtn').disabled = true;
+        document.getElementById('complete-ice-cream').disabled = true;
+      }
+
+      // Reset all sliders (both in library and ice cream scenarios)
+      container.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.value = 0;
+        if (slider.nextElementSibling && slider.nextElementSibling.classList.contains('emotion-display')) {
+          slider.nextElementSibling.textContent = emotionEmojis[0] + " " + emotionNames[0];
+        }
+      });
+
+      // Hide any simulation results
+      container.querySelectorAll('.simulation-result').forEach(div => {
+        div.style.display = 'none';
+        div.textContent = '';
+      });
+
+      // Reset check buttons
+      const checkButtons = document.querySelectorAll('.check-prediction-btn');
+      checkButtons.forEach(button => {
+        button.style.display = 'none';
+        button.classList.remove('checked');
+        button.textContent = 'This is what I think! ��';
+      });
+    }
+
+    // Add function to check all predictions at once
+    function checkAllPredictions() {
+        let totalCorrect = 0;
+        let totalPossible = 0;
+        let feedbackHtml = '';
+
+        document.querySelectorAll('.change-option.selected').forEach(changeOption => {
+            const changeText = changeOption.querySelector('.change-text').textContent.trim();
+            const sliders = changeOption.querySelectorAll('input[type="range"]');
+            
+            feedbackHtml += `<div class="change-feedback" style="margin: 1rem 0; padding: 1rem; border-left: 4px solid #7e61d4;">
+                <h4 style="margin: 0 0 0.5rem 0;">${changeText}</h4>`;
+
+            sliders.forEach(slider => {
+                const role = slider.dataset.role;
+                const value = parseInt(slider.value);
+                
+                // Find matching change in predetermined emotions
+                for (let [key, emotions] of Object.entries(changeEmotions)) {
+                    if (changeText.includes(key)) {
+                        const correctValue = emotions[role].value;
+                        totalPossible++;
+                        
+                        let stakeholderName = role === 'emp' ? 'Employees' : 
+                                            role === 'cust' ? 'Customers' : 'Competitors';
+                        
+                        if (value === correctValue) {
+                            totalCorrect++;
+                            feedbackHtml += `<p style="color: #2e8b57;">✅ ${stakeholderName}: ${emotions[role].correct}</p>`;
+                        } else {
+                            feedbackHtml += `<p style="color: #dc3545;">❌ ${stakeholderName}: ${emotions[role].incorrect}</p>`;
+                        }
+                        break;
+                    }
+                }
+            });
+            
+            feedbackHtml += '</div>';
+        });
+
+        // Calculate percentage
+        const percentage = Math.round((totalCorrect / totalPossible) * 100);
+        
+        // Show score summary
+        const scoreSummary = document.querySelector('.score-summary');
+        scoreSummary.style.display = 'block';
+        
+        const scoreDetails = document.getElementById('score-details');
+        scoreDetails.innerHTML = `
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h2 style="color: #472e9c; margin: 0;">${percentage}%</h2>
+                <p>You got ${totalCorrect} out of ${totalPossible} emotions correct!</p>
+            </div>
+            <div class="feedback-details">
+                ${feedbackHtml}
+            </div>
+        `;
+
+        // Disable all sliders and the complete button
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.disabled = true;
+        });
+        document.getElementById('completeBtn').disabled = true;
+
+        // Show the library unlock button if score is high enough
+        if (percentage >= 70) {
+            const libraryCard = document.getElementById('card-library');
+            libraryCard.classList.remove('locked');
+            const libButton = libraryCard.querySelector('button');
+            libButton.disabled = false;
+            libButton.onclick = startLibrary;
+            libButton.textContent = "Start This Adventure";
+            
+            alert(`Congratulations! You scored ${percentage}% and unlocked the Library Adventure!`);
+        } else {
+            alert(`You scored ${percentage}%. Try to get at least 70% to unlock the next adventure!`);
+        }
+    }
+
+    // Confetti creation function
+    function createConfetti(correct) {
+        if (!correct) return; // Only show confetti for correct answers
+        
+        const colors = ['#FF69B4', '#FFD700', '#7B68EE', '#00CED1', '#FFA500'];
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+  </script>
 </body>
 </html>
