@@ -878,6 +878,7 @@
       </li>
     </ul>
     <div class="button-group" style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
+        <!-- Ice Cream scenario button -->
         <button id="confirmBtn" onclick="confirmVChanges()" disabled>
             Confirm Selections
         </button>
@@ -913,10 +914,10 @@
             </div>
             <div class="stakeholder-sliders-for-change">
                 <div class="stakeholder-block">
-                    <span class="stakeholder-label">👩‍💼 Librarians</span>
+                    <span class="stakeholder-label">👨‍💼 Librarians</span>
                     <div class="slider-container">
                         <input type="range" min="0" max="9" value="1" data-role="emp"
-                               oninput="showCheckButton(this)" />
+                              oninput="showCheckButton(this)" />
                         <span class="emotion-display">😄 Excited</span>
                     </div>
                     <button class="check-prediction-btn" style="display: none;" 
@@ -926,10 +927,10 @@
                     <div class="feedback-message"></div>
                 </div>
                 <div class="stakeholder-block">
-                    <span class="stakeholder-label">📚 Students</span>
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Students</span>
                     <div class="slider-container">
                         <input type="range" min="0" max="9" value="0" data-role="cust"
-                               oninput="showCheckButton(this)" />
+                              oninput="showCheckButton(this)" />
                         <span class="emotion-display">😊 Happy</span>
                     </div>
                     <button class="check-prediction-btn" style="display: none;"
@@ -939,10 +940,10 @@
                     <div class="feedback-message"></div>
                 </div>
                 <div class="stakeholder-block">
-                    <span class="stakeholder-label">🏛️ Other Libraries</span>
+                    <span class="stakeholder-label">🏪 Other Libraries</span>
                     <div class="slider-container">
                         <input type="range" min="0" max="9" value="5" data-role="comp"
-                               oninput="showCheckButton(this)" />
+                              oninput="showCheckButton(this)" />
                         <span class="emotion-display">😕 Confused</span>
                     </div>
                     <button class="check-prediction-btn" style="display: none;"
@@ -962,7 +963,45 @@
                 Create a digital learning lab with VR equipment
             </div>
             <div class="stakeholder-sliders-for-change">
-                <!-- Same stakeholder block structure as above -->
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Librarians</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="4" data-role="emp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😐 Neutral</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Students</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="1" data-role="cust"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Libraries</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="7" data-role="comp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😠 Annoyed</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
             </div>
         </li>
 
@@ -974,7 +1013,45 @@
                 Start weekend reading clubs with snacks
             </div>
             <div class="stakeholder-sliders-for-change">
-                <!-- Same stakeholder block structure as above -->
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Librarians</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="2" data-role="emp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">🙂 Content</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Students</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Libraries</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="4" data-role="comp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😕 Confused</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
             </div>
         </li>
 
@@ -986,7 +1063,45 @@
                 Add a café area with charging stations
             </div>
             <div class="stakeholder-sliders-for-change">
-                <!-- Same stakeholder block structure as above -->
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Librarians</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="6" data-role="emp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😟 Worried</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Students</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="1" data-role="cust"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Libraries</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="5" data-role="comp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😕 Confused</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
             </div>
         </li>
 
@@ -998,16 +1113,54 @@
                 Create outdoor reading gardens
             </div>
             <div class="stakeholder-sliders-for-change">
-                <!-- Same stakeholder block structure as above -->
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Librarians</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="2" data-role="emp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">🙂 Content</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Students</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Libraries</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="3" data-role="comp"
+                              oninput="showCheckButton(this)" />
+                        <span class="emotion-display">🙂 Content</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
             </div>
         </li>
     </ul>
-
+    <!-- Library scenario buttons -->
     <div class="button-group" style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
         <button id="libraryConfirmBtn" onclick="confirmLibraryChanges()" disabled>
             Confirm Selections
         </button>
-        <button id="libraryCompleteBtn" onclick="checkAllLibraryPredictions()" style="display: none;">
+        <button id="libraryCompleteBtn" onclick="checkAllPredictions()" style="display: none;">
             Complete & Get Feedback
         </button>
     </div>
@@ -1016,7 +1169,7 @@
         <h3 style="text-align: center; color: #472e9c;">Your Understanding Score</h3>
         <div id="library-score-details"></div>
     </div>
-    
+
     <!-- New completion button, initially disabled -->
     <button id="complete-library" onclick="completeLibrary()" disabled style="display: block; margin: 2rem auto; padding: 1rem 2rem; font-size: 1.2rem;">
         Complete Library Adventure
@@ -1024,46 +1177,280 @@
   </div>
 
   <!-- Add Theme Park scenario HTML structure -->
-  <div id="themepark-scenario" class="scenario" style="display: none;">
-    <h1>Scenario: Theme Park</h1>
+  <div id="themepark-scenario" class="container">
+    <h2>Scenario: Theme Park</h2>
     <p>Start by selecting <strong>3 changes</strong> from the options below.</p>
     
-    <div class="changes-container">
-      <div class="change-option" onclick="selectChange(this)">
-        <div class="change-text">Add Virtual Reality Rides</div>
-        <div class="stakeholder-sliders-for-change" style="display: none;"></div>
-      </div>
-      <div class="change-option" onclick="selectChange(this)">
-        <div class="change-text">Introduce Season Passes</div>
-        <div class="stakeholder-sliders-for-change" style="display: none;"></div>
-      </div>
-      <div class="change-option" onclick="selectChange(this)">
-        <div class="change-text">Add Water Park Section</div>
-        <div class="stakeholder-sliders-for-change" style="display: none;"></div>
-      </div>
-      <div class="change-option" onclick="selectChange(this)">
-        <div class="change-text">Nighttime Light Shows</div>
-        <div class="stakeholder-sliders-for-change" style="display: none;"></div>
-      </div>
-      <div class="change-option" onclick="selectChange(this)">
-        <div class="change-text">Healthy Food Options</div>
-        <div class="stakeholder-sliders-for-change" style="display: none;"></div>
-      </div>
+    <h4>Choose 3 changes for your Theme Park</h4>
+    <ul class="change-list" id="themeparkChangeList">
+        <!-- Change Option 1 -->
+        <li class="change-option" 
+            onclick="toggleChange(this, 'Add Virtual Reality Rides')" 
+            data-emp="1" data-cust="0" data-comp="7">
+            <div class="change-text">
+                Add Virtual Reality Rides
+            </div>
+            <div class="stakeholder-sliders-for-change">
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Staff</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="1" data-role="emp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😄 Excited</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Visitors</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Parks</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="7" data-role="comp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😠 Annoyed</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+            </div>
+        </li>
+
+        <!-- Change Option 2 -->
+        <li class="change-option" 
+            onclick="toggleChange(this, 'Introduce Season Passes')" 
+            data-emp="4" data-cust="0" data-comp="5">
+            <div class="change-text">
+                Introduce Season Passes
+            </div>
+            <div class="stakeholder-sliders-for-change">
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Staff</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="4" data-role="emp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😐 Neutral</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Visitors</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Parks</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="5" data-role="comp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😕 Confused</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+            </div>
+        </li>
+
+        <!-- Change Option 3 -->
+        <li class="change-option" 
+            onclick="toggleChange(this, 'Add Water Park Section')" 
+            data-emp="1" data-cust="0" data-comp="7">
+            <div class="change-text">
+                Add Water Park Section
+            </div>
+            <div class="stakeholder-sliders-for-change">
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Staff</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="1" data-role="emp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😄 Excited</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Visitors</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Parks</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="7" data-role="comp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😠 Annoyed</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+            </div>
+        </li>
+
+        <!-- Change Option 4 -->
+        <li class="change-option" 
+            onclick="toggleChange(this, 'Nighttime Light Shows')" 
+            data-emp="2" data-cust="0" data-comp="4">
+            <div class="change-text">
+                Nighttime Light Shows
+            </div>
+            <div class="stakeholder-sliders-for-change">
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Staff</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="2" data-role="emp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">🙂 Content</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Visitors</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="0" data-role="cust"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Parks</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="4" data-role="comp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😕 Confused</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+            </div>
+        </li>
+
+        <!-- Change Option 5 -->
+        <li class="change-option" 
+            onclick="toggleChange(this, 'Healthy Food Options')" 
+            data-emp="4" data-cust="1" data-comp="3">
+            <div class="change-text">
+                Healthy Food Options
+            </div>
+            <div class="stakeholder-sliders-for-change">
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">👨‍💼 Staff</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="4" data-role="emp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😐 Neutral</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;" 
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🧑‍🤝‍🧑 Visitors</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="1" data-role="cust"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">😊 Happy</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+                <div class="stakeholder-block">
+                    <span class="stakeholder-label">🏪 Other Parks</span>
+                    <div class="slider-container">
+                        <input type="range" min="0" max="9" value="3" data-role="comp"
+                               oninput="showCheckButton(this)" />
+                        <span class="emotion-display">🙂 Content</span>
+                    </div>
+                    <button class="check-prediction-btn" style="display: none;"
+                            onclick="checkPrediction(this.previousElementSibling.querySelector('input'))">
+                        This is what I think! 🤔
+                    </button>
+                    <div class="feedback-message"></div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="button-group" style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
+        <button id="themeparkConfirmBtn" onclick="confirmVChanges()" disabled>
+            Confirm Selections
+        </button>
+        <button id="themeparkCompleteBtn" onclick="checkAllPredictions()" style="display: none;">
+            Complete & Get Feedback
+        </button>
     </div>
 
-    <div class="button-group">
-      <button id="themepark-confirm-btn" onclick="confirmThemeParkChanges()" disabled>
-        Confirm Selections
-      </button>
-      <button id="themepark-complete-btn" onclick="checkAllThemeParkPredictions()" style="display: none;">
-        Complete & Get Feedback
-      </button>
+    <div class="score-summary" style="display: none; margin: 2rem 0; padding: 1rem; background: #f8f4ff; border-radius: 8px;">
+        <h3 style="text-align: center; color: #472e9c;">Your Understanding Score</h3>
+        <div id="themepark-score-details"></div>
     </div>
-
-    <div class="score-summary" style="display: none;">
-      <h3>Your Understanding Score</h3>
-      <div id="themepark-score-details"></div>
-    </div>
+    
+    <button id="complete-themepark" onclick="completeThemePark()" disabled style="display: block; margin: 2rem auto; padding: 1rem 2rem; font-size: 1.2rem;">
+        Complete Theme Park Adventure
+    </button>
   </div>
 
   <!-- Add stakeholder slider template for both scenarios -->
@@ -1185,47 +1572,70 @@
 
     // Update checkAllPredictions function
     function checkAllPredictions() {
-        let totalCorrect = currentScore;
-        let totalPredictions = 9; // 3 changes × 3 stakeholders = 9 total predictions
+        let allChecked = true;
+        let totalScore = 0;
+        let maxPossibleScore = 0;
         
-        const percentage = Math.round((totalCorrect / totalPredictions) * 100);
+        // Determine which scenario we're in
+        const isIceCream = document.querySelector('#ice-scenario .selected');
+        const isLibrary = document.querySelector('#library-scenario .selected');
+        
+        // Select the appropriate container
+        const container = isLibrary ? '#library-scenario' : '#ice-scenario';
+        const scoreDetails = isLibrary ? '#library-score-details' : '#score-details';
+        const completeButton = isLibrary ? '#complete-library' : '#complete-ice-cream';
+        
+        // Check all selected changes
+        document.querySelectorAll(`${container} .change-option.selected`).forEach(change => {
+            const sliders = change.querySelectorAll('input[type="range"]');
+            sliders.forEach(slider => {
+                const btn = slider.closest('.slider-container').nextElementSibling;
+                if (!btn.classList.contains('locked')) {
+                    allChecked = false;
+                } else {
+                    // Calculate score for checked predictions
+                    const actual = parseInt(change.dataset[slider.dataset.role]);
+                    const predicted = parseInt(slider.value);
+                    const score = Math.max(0, 3 - Math.abs(actual - predicted));
+                    totalScore += score;
+                    maxPossibleScore += 3;
+                }
+            });
+        });
 
+        if (!allChecked) {
+            alert("Please check all your predictions first!");
+            return;
+        }
+
+        // Calculate percentage score
+        const percentageScore = Math.round((totalScore / maxPossibleScore) * 100);
+        
         // Show score summary
-        const scoreSummary = document.querySelector('.score-summary');
-        if (scoreSummary) {
-            scoreSummary.style.display = 'block';
-        }
+        const summaryDiv = document.querySelector(`${container} .score-summary`);
+        const detailsDiv = document.querySelector(scoreDetails);
+        
+        summaryDiv.style.display = 'block';
+        detailsDiv.innerHTML = `
+            <p style="text-align: center; font-size: 1.2rem;">
+                You scored <strong>${totalScore}</strong> out of <strong>${maxPossibleScore}</strong> points!
+                (${percentageScore}%)
+            </p>
+            <p style="text-align: center;">
+                ${getScoreFeedback(percentageScore)}
+            </p>
+        `;
 
-        const scoreDetails = document.getElementById('score-details');
-        if (scoreDetails) {
-            scoreDetails.innerHTML = `
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <h2 style="color: #472e9c; margin: 0;">${percentage}%</h2>
-                    <p>You got ${totalCorrect} out of ${totalPredictions} predictions correct!</p>
-                    ${percentage >= 70 ? 
-                        '<p style="color: #2e8b57;">🌟 Great job! You can now complete this adventure!</p>' : 
-                        '<p style="color: #dc3545;">Try again to get at least 70% to continue!</p>'}
-                </div>
-            `;
+        // Enable the complete scenario button
+        document.querySelector(completeButton).disabled = false;
+    }
 
-            // Add retry button if score is too low
-            if (percentage < 70) {
-                const retryButton = document.createElement('button');
-                retryButton.className = 'retry-button';
-                retryButton.textContent = 'Try Again 🔄';
-                retryButton.onclick = () => retryScenario('ice-scenario');
-                scoreDetails.appendChild(retryButton);
-            }
-
-            // Update complete button state
-            const completeButton = document.getElementById('complete-ice-cream');
-            if (completeButton) {
-                completeButton.style.display = 'block';
-                completeButton.disabled = percentage < 70;
-            }
-        }
-
-        return percentage;
+    // Helper function for score feedback
+    function getScoreFeedback(score) {
+        if (score >= 90) return "Outstanding! You have excellent stakeholder understanding! 🌟";
+        if (score >= 70) return "Great job! You understand stakeholders well! 👏";
+        if (score >= 50) return "Good effort! Keep practicing to improve! 👍";
+        return "Keep learning about stakeholder perspectives! 💪";
     }
 
     // =========================
@@ -1261,23 +1671,36 @@
     // Toggle change selection.
     // The stakeholder slider panels remain hidden until confirmation.
     function toggleChange(element, changeValue) {
-      if (element.dataset.locked === "true") return;  // Do not allow changes if locked
-      
-      if (selectedChanges.includes(changeValue)) {
-        // Unselect this change
-        selectedChanges = selectedChanges.filter(ch => ch !== changeValue);
-        element.classList.remove('selected');
-      } else {
-        // Limit to 3 selections
-        if (selectedChanges.length >= 3) {
-          alert("You can only select 3 changes.");
-          return;
+        if (element.dataset.locked === "true") return;  // Do not allow changes if locked
+        
+        if (selectedChanges.includes(changeValue)) {
+            // Unselect this change
+            selectedChanges = selectedChanges.filter(ch => ch !== changeValue);
+            element.classList.remove('selected');
+        } else {
+            // Limit to 3 selections
+            if (selectedChanges.length >= 3) {
+                alert("You can only select 3 changes.");
+                return;
+            }
+            selectedChanges.push(changeValue);
+            element.classList.add('selected');
         }
-        selectedChanges.push(changeValue);
-        element.classList.add('selected');
-      }
-      // Enable Confirm button only if exactly 3 changes are selected
-      document.getElementById('confirmBtn').disabled = (selectedChanges.length !== 3);
+        
+        // Determine which confirm button to update based on what's in the DOM
+        const iceConfirmBtn = document.getElementById('confirmBtn');
+        const libraryConfirmBtn = document.getElementById('libraryConfirmBtn');
+        const themeparkConfirmBtn = document.getElementById('themeparkConfirmBtn');
+        
+        if (iceConfirmBtn) {
+            iceConfirmBtn.disabled = (selectedChanges.length !== 3);
+        }
+        if (libraryConfirmBtn) {
+            libraryConfirmBtn.disabled = (selectedChanges.length !== 3);
+        }
+        if (themeparkConfirmBtn) {
+            themeparkConfirmBtn.disabled = (selectedChanges.length !== 3);
+        }
     }
 
     // Predefined emotions and feedback for ALL changes
@@ -1365,6 +1788,178 @@
                 value: 5,
                 correct: "Competitors are confused about whether to copy the program.",
                 incorrect: "Think about how competitors react to customer loyalty programs."
+            }
+        },
+        // Library Scenario Emotions
+        "Add quiet study pods with noise-canceling features": {
+            emp: {
+                value: 1,
+                correct: "Librarians are excited about providing a better study environment!",
+                incorrect: "Librarians love helping students focus better."
+            },
+            cust: {
+                value: 0,
+                correct: "Students are thrilled to have quiet spaces for focused study!",
+                incorrect: "Students really appreciate having dedicated quiet spaces."
+            },
+            comp: {
+                value: 5,
+                correct: "Other libraries are concerned about keeping up with modern amenities.",
+                incorrect: "Other libraries feel pressure to upgrade their facilities too."
+            }
+        },
+        "Create a digital learning lab with VR equipment": {
+            emp: {
+                value: 4,
+                correct: "Librarians are a bit nervous about learning new technology.",
+                incorrect: "Librarians need time to adapt to new technology."
+            },
+            cust: {
+                value: 1,
+                correct: "Students are excited about trying new learning tools!",
+                incorrect: "Students love exploring new technology for learning."
+            },
+            comp: {
+                value: 7,
+                correct: "Other libraries are worried about falling behind technologically.",
+                incorrect: "Other libraries feel pressure to modernize their services."
+            }
+        },
+        "Start weekend reading clubs with snacks": {
+            emp: {
+                value: 2,
+                correct: "Librarians enjoy organizing community activities!",
+                incorrect: "Librarians like creating engaging programs for readers."
+            },
+            cust: {
+                value: 0,
+                correct: "Students love combining reading with social activities!",
+                incorrect: "Students enjoy the social aspect of reading clubs."
+            },
+            comp: {
+                value: 4,
+                correct: "Other libraries are interested in this community-building idea.",
+                incorrect: "Other libraries consider similar programs for their communities."
+            }
+        },
+        "Add a café area with charging stations": {
+            emp: {
+                value: 6,
+                correct: "Librarians are concerned about food and drinks near books.",
+                incorrect: "Librarians worry about maintaining cleanliness with food present."
+            },
+            cust: {
+                value: 1,
+                correct: "Students are excited about a comfortable study space!",
+                incorrect: "Students appreciate having a place to recharge and study."
+            },
+            comp: {
+                value: 5,
+                correct: "Other libraries are watching to see if this works.",
+                incorrect: "Other libraries are curious about mixing café and library services."
+            }
+        },
+        "Create outdoor reading gardens": {
+            emp: {
+                value: 2,
+                correct: "Librarians like the idea of expanding reading spaces!",
+                incorrect: "Librarians appreciate creating new reading environments."
+            },
+            cust: {
+                value: 0,
+                correct: "Students are excited about reading in nature!",
+                incorrect: "Students enjoy having outdoor options for reading."
+            },
+            comp: {
+                value: 3,
+                correct: "Other libraries think this is an interesting innovation.",
+                incorrect: "Other libraries are considering similar outdoor spaces."
+            }
+        },
+        // Theme Park Scenario Emotions
+        "Add Virtual Reality Rides": {
+            emp: {
+                value: 1,
+                correct: "Staff are excited to work with cutting-edge technology!",
+                incorrect: "Staff look forward to learning new skills with VR."
+            },
+            cust: {
+                value: 0,
+                correct: "Visitors are thrilled about experiencing new VR attractions!",
+                incorrect: "Visitors are eager to try innovative ride experiences."
+            },
+            comp: {
+                value: 7,
+                correct: "Other parks are worried about falling behind in technology.",
+                incorrect: "Other parks feel pressure to invest in similar attractions."
+            }
+        },
+        "Introduce Season Passes": {
+            emp: {
+                value: 4,
+                correct: "Staff are neutral about handling season pass processes.",
+                incorrect: "Staff need to adapt to new ticketing procedures."
+            },
+            cust: {
+                value: 0,
+                correct: "Visitors love the idea of unlimited visits!",
+                incorrect: "Visitors appreciate the value of repeated access."
+            },
+            comp: {
+                value: 5,
+                correct: "Other parks are concerned about revenue competition.",
+                incorrect: "Other parks monitor the impact on their visitor numbers."
+            }
+        },
+        "Add Water Park Section": {
+            emp: {
+                value: 1,
+                correct: "Staff are excited about new attractions to manage!",
+                incorrect: "Staff look forward to expanding their skills."
+            },
+            cust: {
+                value: 0,
+                correct: "Visitors are thrilled about having more options!",
+                incorrect: "Visitors love having multiple attractions in one place."
+            },
+            comp: {
+                value: 7,
+                correct: "Other parks are very concerned about losing visitors.",
+                incorrect: "Other parks worry about competing with expanded offerings."
+            }
+        },
+        "Nighttime Light Shows": {
+            emp: {
+                value: 2,
+                correct: "Staff are positive about extended operating hours!",
+                incorrect: "Staff appreciate creating magical evening experiences."
+            },
+            cust: {
+                value: 0,
+                correct: "Visitors are excited about nighttime entertainment!",
+                incorrect: "Visitors enjoy having evening activities at the park."
+            },
+            comp: {
+                value: 4,
+                correct: "Other parks are interested in this entertainment idea.",
+                incorrect: "Other parks consider adding similar evening shows."
+            }
+        },
+        "Healthy Food Options": {
+            emp: {
+                value: 4,
+                correct: "Staff are neutral about new menu items.",
+                incorrect: "Staff need to learn about new food preparation."
+            },
+            cust: {
+                value: 1,
+                correct: "Visitors appreciate having healthier choices!",
+                incorrect: "Visitors like having diverse food options."
+            },
+            comp: {
+                value: 3,
+                correct: "Other parks see this as a minor change.",
+                incorrect: "Other parks consider similar menu updates."
             }
         }
     };
@@ -1475,37 +2070,72 @@
             return;
         }
 
-        // First hide unselected options with animation
-        document.querySelectorAll('.change-option').forEach(item => {
+        document.querySelectorAll('#ice-scenario .change-option').forEach(item => {
             if (!item.classList.contains('selected')) {
                 item.classList.add('dissolving');
                 setTimeout(() => {
                     item.style.display = 'none';
                 }, 800);
             } else {
-                // Show the slider container for selected changes
                 let sliderContainer = item.querySelector('.stakeholder-sliders-for-change');
                 if (sliderContainer) {
                     sliderContainer.style.display = 'block';
-                    
-                    // Randomize and enable sliders
                     sliderContainer.querySelectorAll('input[type="range"]').forEach(slider => {
                         slider.value = randomizeSliderValue();
                         slider.disabled = false;
-                        // Update the emotion display for the random value
                         updateEmotion(slider, slider.nextElementSibling);
                     });
-                    
                     sliderContainer.querySelectorAll('.check-prediction-btn').forEach(btn => {
                         btn.style.display = 'block';
+                        btn.classList.remove('locked');
+                        btn.disabled = false;
+                    });
+                }
+            }
+        });
+
+        document.getElementById('confirmBtn').style.display = 'none';
+        document.getElementById('complete-ice-cream').style.display = 'block';
+    }
+
+    function confirmLibraryChanges() {
+        if (selectedChanges.length !== 3) {
+            alert("Please select exactly 3 changes.");
+            return;
+        }
+
+        // Loop through each change option in the Library container
+        document.querySelectorAll('#library-scenario .change-option').forEach(item => {
+            if (!item.classList.contains('selected')) {
+                // Animate and then hide unselected changes
+                item.classList.add('dissolving');
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 800);
+            } else {
+                // For each selected change, reveal the stakeholder slider panels
+                let sliderContainer = item.querySelector('.stakeholder-sliders-for-change');
+                if (sliderContainer) {
+                    sliderContainer.style.display = 'block';
+                    // Randomize slider values and enable the sliders
+                    sliderContainer.querySelectorAll('input[type="range"]').forEach(slider => {
+                        slider.value = randomizeSliderValue();
+                        slider.disabled = false;
+                        updateEmotion(slider, slider.nextElementSibling);
+                    });
+                    // Make sure the "This is what I think!" buttons are visible and active
+                    sliderContainer.querySelectorAll('.check-prediction-btn').forEach(btn => {
+                        btn.style.display = 'block';
+                        btn.disabled = false;
                         btn.classList.remove('locked');
                     });
                 }
             }
         });
 
-        // Hide confirm button and show complete button
-        document.getElementById('confirmBtn').style.display = 'none';
+        // Hide the confirm button and reveal the complete button for the library scenario
+        document.getElementById('libraryConfirmBtn').style.display = 'none';
+        document.getElementById('libraryCompleteBtn').style.display = 'block';
     }
 
     // =========================
@@ -1522,45 +2152,6 @@
         
         // Reset UI elements
         resetScenario('library-scenario');
-    }
-
-    function confirmLibraryChanges() {
-        if (selectedChanges.length !== 3) {
-            alert("Please select exactly 3 changes.");
-            return;
-        }
-
-        // First hide unselected options with animation
-        document.querySelectorAll('#library-scenario .change-option').forEach(item => {
-            if (!item.classList.contains('selected')) {
-                item.classList.add('dissolving');
-                setTimeout(() => {
-                    item.style.display = 'none';
-                }, 800);
-            } else {
-                // Show the slider container for selected changes
-                let sliderContainer = item.querySelector('.stakeholder-sliders-for-change');
-                if (sliderContainer) {
-                    sliderContainer.style.display = 'block';
-                    
-                    // Randomize and enable sliders
-                    sliderContainer.querySelectorAll('input[type="range"]').forEach(slider => {
-                        slider.value = randomizeSliderValue();
-                        slider.disabled = false;
-                        // Update the emotion display for the random value
-                        updateEmotion(slider, slider.nextElementSibling);
-                    });
-                    
-                    sliderContainer.querySelectorAll('.check-prediction-btn').forEach(btn => {
-                        btn.style.display = 'block';
-                        btn.classList.remove('locked');
-                    });
-                }
-            }
-        });
-
-        // Hide confirm button
-        document.getElementById('libraryConfirmBtn').style.display = 'none';
     }
 
     function simulateLibrary() {
